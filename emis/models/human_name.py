@@ -29,4 +29,3 @@ class HumanName(db.Model):
         if value and value <= 0:
             raise ValueError('Rank should not be less than 0')
         return value
-

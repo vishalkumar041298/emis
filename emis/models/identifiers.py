@@ -1,6 +1,6 @@
 import enum
-from emis.utils.database import db
 from sqlalchemy import Enum
+from emis.utils.database import db
 
 
 class IdentifierUse(enum.Enum):
@@ -18,3 +18,5 @@ class Identifier(db.Model):
     system = db.Column(db.String(128))
     value = db.Column(db.String(128))
     patient_id = db.Column(db.String(64), db.ForeignKey('patient.id'))
+    observation_id = db.Column(db.String(64), db.ForeignKey('observation.id'))
+    encounter_id = db.Column(db.String(64), db.ForeignKey('encounter.id'))

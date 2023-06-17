@@ -9,10 +9,10 @@ class Gender(enum.Enum):
     OTHER = 'other'
     UNKNOWN = 'unkown'
 
+
 # TODO: period, codeableConcept, coding
 class Patient(db.Model):
     id = db.Column(db.String(64), primary_key=True)
-    resourceType = db.Column(db.String(64))
     meta = db.Column(db.JSON)
     text = db.Column(db.JSON)
     # identifier = db.Column(db.JSON)
@@ -22,9 +22,9 @@ class Patient(db.Model):
     active = db.Column(db.Boolean, default=True)
     telecom = db.relationship('ContactPoint', backref='patient', lazy=True)
     gender = db.Column(Enum(Gender))
-    birthDate = db.Column(db.Date)
-    deceasedDateTime = db.Column(db.DateTime)
+    birth_date = db.Column(db.Date)
+    deceased_date_time = db.Column(db.DateTime)
     address = db.Column(db.JSON)
-    maritalStatus = db.Column(db.JSON)
-    multipleBirthBoolean = db.Column(db.Boolean)
+    marital_status = db.Column(db.JSON)
+    multiple_birth_boolean = db.Column(db.Boolean)
     communication = db.Column(db.JSON)
