@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 setup(
-    name="EMIS",
+    name="emis",
     version='1.0.0',
     author='Vishal',
     author_email='vishallindan170@gmail.com',
