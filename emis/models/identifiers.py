@@ -1,6 +1,7 @@
 import enum
 from sqlalchemy import Enum
 from emis.utils.database import db
+from emis.utils.utils import JSONSerializableMixin
 
 
 class IdentifierUse(enum.Enum):
@@ -11,7 +12,7 @@ class IdentifierUse(enum.Enum):
     OLD = 'old'
 
 
-class Identifier(db.Model):
+class Identifier(db.Model, JSONSerializableMixin):
     id = db.Column(db.String(64), primary_key=True)
     use = db.Column(Enum(IdentifierUse))
     type = db.Column(db.JSON)

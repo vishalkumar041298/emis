@@ -2,6 +2,7 @@ import enum
 from sqlalchemy import Enum
 from sqlalchemy.orm import validates
 from emis.utils.database import db
+from emis.utils.utils import JSONSerializableMixin
 
 
 class HumanNameUse(enum.Enum):
@@ -14,7 +15,7 @@ class HumanNameUse(enum.Enum):
     MAIDEN = 'maiden'
 
 
-class HumanName(db.Model):
+class HumanName(db.Model, JSONSerializableMixin):
     id = db.Column(db.Integer, primary_key=True)
     use = db.Column(Enum(HumanNameUse))
     text = db.Column(db.String(64))

@@ -1,7 +1,7 @@
 import enum
 from sqlalchemy import Enum
 from emis.utils.database import db
-from emis.utils.utils import remove_urn
+from emis.utils.utils import JSONSerializableMixin, remove_urn
 
 
 class ObservationStatus(enum.Enum):
@@ -15,7 +15,7 @@ class ObservationStatus(enum.Enum):
     UNKNOWN = 'unknown'
 
 
-class Observation(db.Model):
+class Observation(db.Model, JSONSerializableMixin):
     id = db.Column(db.String(64), primary_key=True)
     meta = db.Column(db.JSON)
     identifier = db.relationship('Identifier', backref='observation', lazy=True)
@@ -31,7 +31,7 @@ class Observation(db.Model):
     patient_id = db.Column(db.String(64), db.ForeignKey('patient.id'))
     enounter_id = db.Column(db.String(64), db.ForeignKey('patient.id'))
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):  # type: ignore
         preprocessed_value = remove_urn(self.enounter_id)
         self.enounter_id = preprocessed_value
         super().save(*args, **kwargs)

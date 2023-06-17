@@ -2,6 +2,7 @@ import enum
 from sqlalchemy import Enum
 from sqlalchemy.orm import validates
 from emis.utils.database import db
+from emis.utils.utils import JSONSerializableMixin
 
 
 class ContactPointSystem(enum.Enum):
@@ -22,7 +23,7 @@ class ContactPointUse(enum.Enum):
     MOBILE = 'mobile'
 
 
-class ContactPoint(db.Model):
+class ContactPoint(db.Model, JSONSerializableMixin):
     id = db.Column(db.Integer, primary_key=True)
     system = db.Column(Enum(ContactPointSystem))
     value = db.Column(db.String(128))

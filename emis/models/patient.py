@@ -1,6 +1,7 @@
 import enum
 from sqlalchemy import Enum
 from emis.utils.database import db
+from emis.utils.utils import JSONSerializableMixin
 
 
 class Gender(enum.Enum):
@@ -11,7 +12,7 @@ class Gender(enum.Enum):
 
 
 # TODO: period, codeableConcept, coding
-class Patient(db.Model):
+class Patient(db.Model, JSONSerializableMixin):
     id = db.Column(db.String(64), primary_key=True)
     meta = db.Column(db.JSON)
     text = db.Column(db.JSON)

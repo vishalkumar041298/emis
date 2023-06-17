@@ -1,6 +1,7 @@
 import enum
 from sqlalchemy import Enum
 from emis.utils.database import db
+from emis.utils.utils import JSONSerializableMixin
 
 
 class EncounterStatus(enum.Enum):
@@ -15,7 +16,7 @@ class EncounterStatus(enum.Enum):
     UNKNOWN = 'unknown'
 
 
-class Encounter(db.Model):
+class Encounter(db.Model, JSONSerializableMixin):
     id = db.Column(db.String(64), primary_key=True)
     meta = db.Column(db.JSON)
     status = db.Column(Enum(EncounterStatus))
