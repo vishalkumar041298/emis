@@ -1,3 +1,4 @@
+# flake8: noqa
 from .patient import Patient
 from .observation import Observation
 from .contact_point import ContactPoint

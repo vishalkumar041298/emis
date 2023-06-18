@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 from dotenv import load_dotenv
 from flask import Flask
-from emis.models import *
+from emis.models import *  # noqa
 from emis.routes import register_routes
 from emis.utils.database import db
 

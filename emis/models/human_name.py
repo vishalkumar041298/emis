@@ -1,8 +1,11 @@
+from __future__ import annotations
+from dataclasses import dataclass, field
+from datetime import datetime
 import enum
-from sqlalchemy import Enum
-from sqlalchemy.orm import validates
+import json
+from typing import Any
 from emis.utils.database import db
-from emis.utils.utils import JSONSerializableMixin
+from emis.utils.utils import return_as_dict
 
 
 class HumanNameUse(enum.Enum):
@@ -15,18 +18,30 @@ class HumanNameUse(enum.Enum):
     MAIDEN = 'maiden'
 
 
-class HumanName(db.Model, JSONSerializableMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    use = db.Column(Enum(HumanNameUse))
-    text = db.Column(db.String(64))
-    family_name = db.Column(db.String(64))
-    given = db.Column(db.JSON)
-    prefix = db.Column(db.JSON)
-    suffix = db.Column(db.JSON)
-    patient_id = db.Column(db.String(64), db.ForeignKey('patient.id'))
+@dataclass
+class HumanName:
+    use: HumanNameUse = None
+    text: str = None
+    family_name: str = None
+    given: list[str] = field(default_factory=list)
+    prefix: list[str] = field(default_factory=list)
+    period_start: datetime = None
+    period_end: datetime = None
 
-    @validates('rank')
-    def validate_positive_integer(self, key: str, value: int) -> int:
-        if value and value <= 0:
-            raise ValueError('Rank should not be less than 0')
-        return value
+
+class HumanNameList(db.TypeDecorator):
+    impl = db.String
+
+    def process_bind_param(self, value: Any, dialect: Any) -> Any:
+        if value is not None:
+            return json.dumps(return_as_dict(value))
+        return []
+
+    def process_result_value(self, value: Any, dialect: Any) -> Any:
+        if value is not None:
+            data = json.loads(value)
+            for human_name in data:
+                if 'use' in human_name:
+                    human_name['use'] = HumanNameUse(human_name['use'])
+            return [HumanName(**hn) for hn in data]
+        return []

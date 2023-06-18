@@ -1,8 +1,10 @@
+from __future__ import annotations
+from dataclasses import dataclass
 import enum
-from sqlalchemy import Enum
-from sqlalchemy.orm import validates
+import json
+from typing import Any
 from emis.utils.database import db
-from emis.utils.utils import JSONSerializableMixin
+from emis.utils.utils import return_as_dict
 
 
 class ContactPointSystem(enum.Enum):
@@ -23,16 +25,29 @@ class ContactPointUse(enum.Enum):
     MOBILE = 'mobile'
 
 
-class ContactPoint(db.Model, JSONSerializableMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    system = db.Column(Enum(ContactPointSystem))
-    value = db.Column(db.String(128))
-    use = db.Column(Enum(ContactPointUse))
-    rank = db.Column(db.Integer)
-    patient_id = db.Column(db.String(64), db.ForeignKey('patient.id'))
+@dataclass
+class ContactPoint:
+    system: ContactPointSystem = None
+    value: str = None
+    use: ContactPointUse = None
+    rank: int = None
 
-    @validates('rank')
-    def validate_positive_integer(self, key: str, value: int) -> int:
-        if value and value <= 0:
-            raise ValueError('Rank should not be less than 0')
-        return value
+
+class ContactPointList(db.TypeDecorator):
+    impl = db.String
+
+    def process_bind_param(self, value: Any, dialect: Any) -> Any:
+        if value is not None:
+            return json.dumps(return_as_dict(value))
+        return []
+
+    def process_result_value(self, value: Any, dialect: Any) -> Any:
+        if value is not None:
+            data = json.loads(value)
+            for contact_point in data:
+                if 'use' in contact_point:
+                    contact_point['use'] = ContactPoint(contact_point['use'])
+                if 'system' in contact_point:
+                    contact_point['system'] = ContactPointSystem(contact_point['system'])
+            return [ContactPoint(**cp) for cp in data]
+        return []
