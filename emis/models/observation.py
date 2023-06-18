@@ -30,12 +30,12 @@ class Observation(db.Model, JSONSerializableMixin):
     value_quantity_value = db.Column(db.Float)
     value_quantity_unit = db.Column(db.String(20))
     value_quantity_system = db.Column(db.String(128))
-    value_quantity_code = db.Column(db.String(10))
+    value_quantity_code = db.Column(db.String(64))
     effective_date_time = db.Column(db.DateTime)
     code = db.Column(db.JSON)
     component = db.Column(db.JSON)
     patient_id = db.Column(db.String(64), db.ForeignKey('patient.id'), nullable=True)
-    enounter_id = db.Column(db.String(64), db.ForeignKey('encounter.id'), nullable=True)
+    encounter_id = db.Column(db.String(64), db.ForeignKey('encounter.id'), nullable=True)
 
     @classmethod
     def prepare_model(cls, obj: dict) -> Observation:
@@ -46,7 +46,11 @@ class Observation(db.Model, JSONSerializableMixin):
 
         issued = None
         if obj.get('issued'):
-            issued = datetime.strptime(obj.get('issued'), "%Y-%m-%dT%H:%M:%S%z")
+            issued = datetime.strptime(obj.get('issued'), "%Y-%m-%dT%H:%M:%S.%f%z")
+            # try:
+            #     issued = datetime.strptime(obj.get('issued'), "%Y-%m-%dT%H:%M:%S%z")
+            # except Exception as e:
+            #     print("Exception: ", str(e))
 
         effective_date_time = None
         if obj.get('effectiveDateTime'):
@@ -69,7 +73,7 @@ class Observation(db.Model, JSONSerializableMixin):
 
         encounter_id = None
         if obj.get('encounter'):
-            encounter_id = remove_urn(obj.get('subject').get('reference'))
+            encounter_id = remove_urn(obj.get('encounter').get('reference'))
 
         return Observation(
             id=obj.get('id'),

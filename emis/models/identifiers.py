@@ -28,12 +28,12 @@ class IdentifierList(db.TypeDecorator):
 
     def process_bind_param(self, value: Any, dialect: Any) -> Any:
         if value is not None:
-            return json.dumps(return_as_dict(value))
+            return return_as_dict(value)
         return []
 
     def process_result_value(self, value: Any, dialect: Any) -> Any:
         if value is not None:
-            identifiers_data = json.loads(value)
+            identifiers_data = json.load(value)
             for identifier in identifiers_data:
                 if 'use' in identifier:
                     identifier['use'] = IdentifierUse(identifier['use'])

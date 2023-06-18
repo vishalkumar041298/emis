@@ -45,3 +45,12 @@ class HumanNameList(db.TypeDecorator):
                     human_name['use'] = HumanNameUse(human_name['use'])
             return [HumanName(**hn) for hn in data]
         return []
+
+    @classmethod
+    def prepare_type(cls, items: list[dict[str, Any]]) -> list[HumanName]:
+        typed_items = []
+        for item in items:
+            if 'use' in item:
+                item['use'] = HumanNameUse(item['use'])
+            typed_items.append(HumanName(**item))
+        return typed_items

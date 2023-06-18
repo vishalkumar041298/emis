@@ -46,8 +46,19 @@ class ContactPointList(db.TypeDecorator):
             data = json.loads(value)
             for contact_point in data:
                 if 'use' in contact_point:
-                    contact_point['use'] = ContactPoint(contact_point['use'])
+                    contact_point['use'] = ContactPointUse(contact_point['use'])
                 if 'system' in contact_point:
                     contact_point['system'] = ContactPointSystem(contact_point['system'])
             return [ContactPoint(**cp) for cp in data]
         return []
+
+    @classmethod
+    def prepare_type(cls, items: list[dict[str, Any]]) -> list[ContactPoint]:
+        typed_items = []
+        for item in items:
+            if 'use' in item:
+                item['use'] = ContactPointUse(item['use'])
+            if 'system' in item:
+                item['system'] = ContactPointSystem(item['system'])
+            typed_items.append(ContactPoint(**item))
+        return typed_items

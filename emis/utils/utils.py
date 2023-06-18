@@ -1,4 +1,4 @@
-import inspect
+from dataclasses import is_dataclass
 from enum import Enum
 from typing import Any
 
@@ -19,6 +19,6 @@ def return_as_dict(obj: Any) -> Any:
         return obj.value
     elif isinstance(obj, list):
         return [return_as_dict(v) for v in obj]
-    elif inspect.isclass(obj):
+    elif is_dataclass(obj):
         return {key: return_as_dict(value) for key, value in obj.__dict__.items()}
     return obj
