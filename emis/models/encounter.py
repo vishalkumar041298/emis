@@ -34,7 +34,7 @@ class Encounter(db.Model):
     encounter_class = db.Column(db.JSON)
     individual = db.Column(db.String(64))
     period_start = db.Column(db.DateTime)
-    period_end = db.Column(db.DataTime)
+    period_end = db.Column(db.DateTime)
     patient_id = db.Column(db.String(64), db.ForeignKey('patient.id'))
 
     @classmethod

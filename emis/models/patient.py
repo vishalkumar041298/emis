@@ -32,7 +32,7 @@ class Patient(db.Model, JSONSerializableMixin):
     communication = db.Column(db.JSON)
     identifier = db.Column(IdentifierList)
     period_start = db.Column(db.DateTime)
-    period_end = db.Column(db.DataTime)
+    period_end = db.Column(db.DateTime)
     text = db.Column(db.JSON)
     telecom = db.Column(ContactPointList)
 

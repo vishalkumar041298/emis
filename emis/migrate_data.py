@@ -11,7 +11,6 @@ from util_functions import fetch_json_files
 
 resource_type_method_mapper = {
     "Patient":  Patient,
-    "Identifier": Identifier,
     "Observation": Observation,
     "Encounter": Encounter,
 }
