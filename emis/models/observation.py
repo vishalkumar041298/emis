@@ -29,7 +29,7 @@ class Observation(db.Model, JSONSerializableMixin):
     code = db.Column(db.JSON)
     component = db.Column(db.JSON)
     patient_id = db.Column(db.String(64), db.ForeignKey('patient.id'))
-    enounter_id = db.Column(db.String(64), db.ForeignKey('patient.id'))
+    enounter_id = db.Column(db.String(64), db.ForeignKey('encounter.id'))
 
     def save(self, *args, **kwargs):  # type: ignore
         preprocessed_value = remove_urn(self.enounter_id)

@@ -1,5 +1,3 @@
-# project/app/routes/patient_routes.py
-
 from flask import Blueprint, jsonify, request, Response
 from emis.models.patient import Patient
 from emis.utils.database import db
