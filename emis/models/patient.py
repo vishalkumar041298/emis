@@ -6,7 +6,7 @@ from sqlalchemy import Enum
 from emis.models.contact_point import ContactPointList
 from emis.models.human_name import HumanNameList
 from emis.utils.database import db
-from emis.utils.utils import JSONSerializableMixin, return_as_dict
+from emis.utils.utils import return_as_dict
 from .identifiers import IdentifierList
 
 
@@ -17,7 +17,7 @@ class Gender(enum.Enum):
     UNKNOWN = 'unkown'
 
 
-class Patient(db.Model, JSONSerializableMixin):
+class Patient(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     meta = db.Column(db.JSON)
     name = db.Column(HumanNameList)

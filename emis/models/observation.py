@@ -5,7 +5,7 @@ from typing import Any
 from sqlalchemy import Enum
 from emis.models.identifiers import IdentifierList
 from emis.utils.database import db
-from emis.utils.utils import JSONSerializableMixin, remove_urn, return_as_dict
+from emis.utils.utils import remove_urn, return_as_dict
 
 
 class ObservationStatus(enum.Enum):
@@ -19,7 +19,7 @@ class ObservationStatus(enum.Enum):
     UNKNOWN = 'unknown'
 
 
-class Observation(db.Model, JSONSerializableMixin):
+class Observation(db.Model):
     id = db.Column(db.String(64), primary_key=True)
     meta = db.Column(db.JSON)
     identifier = db.Column(IdentifierList)
