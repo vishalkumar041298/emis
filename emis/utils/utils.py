@@ -9,11 +9,11 @@ def remove_urn(id: str) -> str:
     return id
 
 
-def return_as_dict(obj: Any) -> Any:
+def return_as_dict(obj: Any, type: Any = None) -> Any:
     if isinstance(obj, Enum):
         return obj.value
     elif isinstance(obj, list):
         return [return_as_dict(v) for v in obj]
-    elif is_dataclass(obj):
+    elif is_dataclass(obj) or (type and isinstance(obj, type)):
         return {key: return_as_dict(value) for key, value in obj.__dict__.items()}
     return obj

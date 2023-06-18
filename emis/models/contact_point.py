@@ -1,7 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
 import enum
-import json
 from typing import Any
 from emis.utils.database import db
 from emis.utils.utils import return_as_dict
@@ -38,18 +37,17 @@ class ContactPointList(db.TypeDecorator):
 
     def process_bind_param(self, value: Any, dialect: Any) -> Any:
         if value is not None:
-            return json.dumps(return_as_dict(value))
+            return_as_dict(value)
         return []
 
     def process_result_value(self, value: Any, dialect: Any) -> Any:
         if value is not None:
-            data = json.loads(value)
-            for contact_point in data:
-                if 'use' in contact_point:
+            for contact_point in value:
+                if contact_point.get('use'):
                     contact_point['use'] = ContactPointUse(contact_point['use'])
-                if 'system' in contact_point:
+                if contact_point.get('system'):
                     contact_point['system'] = ContactPointSystem(contact_point['system'])
-            return [ContactPoint(**cp) for cp in data]
+            return [ContactPoint(**cp) for cp in value]
         return []
 
     @classmethod

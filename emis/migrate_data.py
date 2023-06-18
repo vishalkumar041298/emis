@@ -5,8 +5,8 @@ from typing import Any
 from emis.models.encounter import Encounter
 from emis.models.observation import Observation
 from emis.models.patient import Patient
-from .app import app, db
-from .util_functions import fetch_json_files
+from emis.app import app, db
+from emis.util_functions import fetch_json_files
 
 
 resource_type_method_mapper = {
@@ -40,8 +40,8 @@ if __name__ == '__main__':
                     all_models[resource_type].append(model_obj)
 
         for resource_type, _ in resource_type_method_mapper.items():
-            print(resource_type)
             models = all_models.get(resource_type)
             if models:
                 db.session.bulk_save_objects(models)
         db.session.commit()
+        print("Migration Completed")

@@ -1,8 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
-from datetime import datetime
 import enum
-import json
 from typing import Any
 from emis.utils.database import db
 from emis.utils.utils import return_as_dict
@@ -22,11 +20,10 @@ class HumanNameUse(enum.Enum):
 class HumanName:
     use: HumanNameUse = None
     text: str = None
-    family_name: str = None
+    family: str = None
     given: list[str] = field(default_factory=list)
     prefix: list[str] = field(default_factory=list)
-    period_start: datetime = None
-    period_end: datetime = None
+    suffix: list[str] = field(default_factory=list)
 
 
 class HumanNameList(db.TypeDecorator):
@@ -34,16 +31,16 @@ class HumanNameList(db.TypeDecorator):
 
     def process_bind_param(self, value: Any, dialect: Any) -> Any:
         if value is not None:
-            return json.dumps(return_as_dict(value))
+            return return_as_dict(value)
         return []
 
     def process_result_value(self, value: Any, dialect: Any) -> Any:
         if value is not None:
-            data = json.loads(value)
-            for human_name in data:
-                if 'use' in human_name:
+            # data = json.loads(value)
+            for human_name in value:
+                if human_name.get('use'):
                     human_name['use'] = HumanNameUse(human_name['use'])
-            return [HumanName(**hn) for hn in data]
+            return [HumanName(**hn) for hn in value]
         return []
 
     @classmethod

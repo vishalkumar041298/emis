@@ -47,6 +47,10 @@ class Patient(db.Model):
         if obj.get('deceasedDateTime'):
             deceased_date_time = datetime.strptime(obj.get('deceasedDateTime'), "%Y-%m-%dT%H:%M:%S%z")
 
+        name_list = []
+        if obj.get('name'):
+            name_list = HumanNameList.prepare_type(obj.get('name'))
+
         identifier_list = []
         if obj.get('identifier'):
             identifier_list = IdentifierList.prepare_type(obj.get('identifier'))
@@ -66,6 +70,7 @@ class Patient(db.Model):
         marital_status_coding = obj.get('maritalStatus', {}).get('coding')
         return Patient(
             id=obj.get('id'),
+            name=name_list,
             meta=obj.get('meta'),
             text=obj.get('text'),
             extension=obj.get('extension'),
@@ -84,4 +89,4 @@ class Patient(db.Model):
         )
 
     def convert_to_json(self) -> dict[str, Any]:
-        return return_as_dict(self)
+        return return_as_dict(self, Patient)

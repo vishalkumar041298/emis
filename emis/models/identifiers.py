@@ -1,7 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
 import enum
-import json
 from typing import Any
 from emis.utils.database import db
 from emis.utils.utils import return_as_dict
@@ -33,11 +32,11 @@ class IdentifierList(db.TypeDecorator):
 
     def process_result_value(self, value: Any, dialect: Any) -> Any:
         if value is not None:
-            identifiers_data = json.load(value)
-            for identifier in identifiers_data:
-                if 'use' in identifier:
+            # identifiers_data = json.load(value)
+            for identifier in value:
+                if identifier.get('use'):
                     identifier['use'] = IdentifierUse(identifier['use'])
-            return [Identifier(**identifier_data) for identifier_data in identifiers_data]
+            return [Identifier(**identifier_data) for identifier_data in value]
         return []
 
     @classmethod
