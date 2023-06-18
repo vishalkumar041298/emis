@@ -30,7 +30,7 @@ class HumanName:
 
 
 class HumanNameList(db.TypeDecorator):
-    impl = db.String
+    impl = db.JSON
 
     def process_bind_param(self, value: Any, dialect: Any) -> Any:
         if value is not None:
